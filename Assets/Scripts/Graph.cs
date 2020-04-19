@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Graph : MonoBehaviour
@@ -10,30 +11,19 @@ public class Graph : MonoBehaviour
     [SerializeField]
     private GraphFunctionName _function;
 
-    private Transform[] _points;
-
-    private void Awake()
-    {
-        float step = 2f / _resolution;
-        Vector3 scale = Vector3.one * step;
-        Vector3 position;
-        position.y = 0f;
-        position.z = 0f;
-        _points = new Transform[_resolution * _resolution];
-        for (int i = 0; i < _points.Length; i++)
-        {
-            Transform point = Instantiate(_pointPrefab);
-            point.localScale = scale;
-            point.SetParent(transform, false);
-            _points[i] = point;
-        }
-    }
+    private List<Transform> _points = new List<Transform>();
 
     private void Update()
     {
-        float t = Time.time;
+        var t = Time.time;
         var function = _functions[(int) _function];
-        float step = 2f / _resolution;
+        var step = 2f / _resolution;
+        var count = _resolution * _resolution;
+        ManagePoints(count, step);
+        if (_points.Count != count)
+        {
+            return;
+        }
         for (int i = 0, z = 0; z < _resolution; z++)
         {
             float v = (z + 0.5f) * step - 1f;
@@ -43,6 +33,50 @@ public class Graph : MonoBehaviour
                 _points[i].localPosition = function(u, v, t);
             }
         }
+    }
+
+    private void ManagePoints(int count, float step)
+    {
+        if (_points.Count == count)
+        {
+            return;
+        }
+
+        if (_points.Count < count)
+        {
+            Vector3 scale = Vector3.one * step;
+            for (int i = 0; i < count - _points.Count; i++)
+            {
+                AddPoint(scale);
+            }
+        }
+        else
+        {
+            var pointsToRemove = new Transform[_points.Count - count];
+            for (int i = 0; i < pointsToRemove.Length; i++)
+            {
+                pointsToRemove[i] = _points[_points.Count - 1 - i];
+            }
+
+            for (int i = 0; i < pointsToRemove.Length; i++)
+            {
+                RemovePoint(pointsToRemove[i]);
+            }
+        }
+    }
+
+    private void AddPoint(Vector3 scale)
+    {
+        Transform point = Instantiate(_pointPrefab);
+        point.localScale = scale;
+        point.SetParent(transform, false);
+        _points.Add(point);
+    }
+
+    private void RemovePoint(Transform point)
+    {
+        Destroy(point.gameObject);
+        _points.Remove(point);
     }
 
     private static GraphFunction[] _functions =
