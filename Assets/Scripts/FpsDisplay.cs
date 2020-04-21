@@ -4,10 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(FpsCounter))]
 public class FpsDisplay : MonoBehaviour
 {
     [SerializeField]
-    private Text _averageLabel, _highestLabel, _lowestLabel;
+    private Text _averageLabel;
+    [SerializeField]
+    private Text _highestLabel;
+    [SerializeField]
+    private Text _lowestLabel;
 
     [SerializeField]
     private FPSColor[] _fpsColors;
@@ -34,9 +39,9 @@ public class FpsDisplay : MonoBehaviour
 
     private void Update()
     {
-        Display(_averageLabel, _fpsCounter.AverageFps);
-        Display(_highestLabel, _fpsCounter.HighestFps);
-        Display(_lowestLabel, _fpsCounter.LowerFps);
+        Display(_averageLabel, _fpsCounter.AverageFPS);
+        Display(_highestLabel, _fpsCounter.HighestPFS);
+        Display(_lowestLabel, _fpsCounter.LowersFPS);
     }
 
     private void Display(Text label, int fps)

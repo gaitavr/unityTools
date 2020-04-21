@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class FpsCounter : MonoBehaviour
 {
-    private int[] _fpsBuffer;
-    private int _currentBufferIndex;
-
     [SerializeField]
     private int _frameRange = 60;
 
-    public int AverageFps { get; private set; }
-    public int HighestFps { get; private set; }
-    public int LowerFps { get; private set; }
+    private int[] _fpsBuffer;
+    private int _fpsBufferIndex;
+
+    public int AverageFPS { get; private set; }
+    public int HighestPFS { get; private set; }
+    public int LowersFPS { get; private set; }
 
     private void Update()
     {
-        if (_fpsBuffer == null || _fpsBuffer.Length != _frameRange)
+        if (_fpsBuffer == null || _frameRange != _fpsBuffer.Length)
         {
             InitializeBuffer();
         }
@@ -33,38 +33,40 @@ public class FpsCounter : MonoBehaviour
         }
 
         _fpsBuffer = new int[_frameRange];
-        _currentBufferIndex = 0;
+        _fpsBufferIndex = 0;
     }
 
     private void UpdateBuffer()
     {
-        _fpsBuffer[_currentBufferIndex++] = (int)(1f / Time.unscaledDeltaTime);
-        if (_currentBufferIndex >= _frameRange)
+        _fpsBuffer[_fpsBufferIndex++] = (int)(1f / Time.unscaledDeltaTime);
+        if (_fpsBufferIndex >= _frameRange)
         {
-            _currentBufferIndex = 0;
+            _fpsBufferIndex = 0;
         }
     }
 
     private void CalculateFps()
     {
-        var sum = 0;
-        HighestFps = 0;
-        LowerFps = int.MaxValue;
+        int sum = 0;
+        int lowest = int.MaxValue;
+        int highest = 0;
         for (int i = 0; i < _frameRange; i++)
         {
             int fps = _fpsBuffer[i];
             sum += fps;
-            if (fps > HighestFps)
+            if (fps > highest)
             {
-                HighestFps = fps;
+                highest = fps;
             }
 
-            if (fps < LowerFps)
+            if (fps < lowest)
             {
-                LowerFps = fps;
+                lowest = fps;
             }
         }
 
-        AverageFps = sum / _frameRange;
+        HighestPFS = highest;
+        LowersFPS = lowest;
+        AverageFPS = sum / _frameRange;
     }
 }
