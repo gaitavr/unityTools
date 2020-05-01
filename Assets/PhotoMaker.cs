@@ -49,6 +49,8 @@ public class PhotoMaker : MonoBehaviour
 
     private void ShowFolder()
     {
+#if UNITY_EDITOR
         UnityEditor.EditorUtility.RevealInFinder(_path);
+#endif
     }
 }
