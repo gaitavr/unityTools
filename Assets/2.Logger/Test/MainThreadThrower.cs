@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Text;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class MainThreadThrower : MonoBehaviour
@@ -23,7 +24,8 @@ public class MainThreadThrower : MonoBehaviour
         switch (rnd)
         {
             case 0:
-                Debug.Log("Log from MAIN THREAD");
+                Debug.Log(GetLongMessage(4000));
+                //Debug.Log("Log from MAIN THREAD");
                 break;
             case 1:
                 Debug.LogWarning("Warning from MAIN THREAD");
@@ -36,5 +38,15 @@ public class MainThreadThrower : MonoBehaviour
                 obj.SetActive(false);
                 break;
         }
+    }
+
+    private string GetLongMessage(int count)
+    {
+        var str = new StringBuilder();
+        for (int i = 0; i < count; i++)
+        {
+            str.Append("A");
+        }
+        return str.ToString();
     }
 }
